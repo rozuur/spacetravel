@@ -1,4 +1,3 @@
-
 function space(canvas){
     var cvs = canvas;
     var ctx = cvs.getContext("2d");
@@ -45,11 +44,11 @@ function space(canvas){
     };
 }
 
-function spaceShuttle(x, y, mass){
+function spaceShuttle(x, y, mass, px, py){
     var currx = x;
-    var prevx = x;
+    var prevx = px ? px : x;
     var curry = y;
-    var prevy = y;
+    var prevy = py ? py : y;
 
     var velocity = 0;
     var shuttleMass = mass;
