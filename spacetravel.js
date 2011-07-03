@@ -33,13 +33,20 @@ function space(canvas){
         var prevy = object.prevY();
         var y = 2 * curry - prevy + ay * dt * dt;
 
+        return [x,y];
         object.setX(x);
         object.setY(y);
     }
     
     this.moveShuttle = function(){
         spaceshuttle.clearShuttle(ctx);
-        moveObject(stars[0], spaceshuttle, 50);
+        var p0 = moveObject(stars[0], spaceshuttle, 50);
+        var p1 = moveObject(stars[1], spaceshuttle, 50);
+        var p2 = moveObject(stars[2], spaceshuttle, 50);
+        var x = p0[0] + p1[0] + p2[0];
+        var y = p0[1] + p1[1] + p2[1];
+        spaceshuttle.setX(x);
+        spaceshuttle.setY(y);
         spaceshuttle.drawShuttle(ctx);
     };
 }
@@ -154,12 +161,20 @@ function heavenlyObject(x, y, mass){
 function test_game(){
     var cvs = document.getElementById("space_travel");
     var sky = new space(cvs);
-    
-    var shuttle = new spaceShuttle(100, 50, 5);
+
     var star = new heavenlyObject(cvs.width - 50, cvs.height - 50, 5);
+    var star1 = new heavenlyObject(cvs.width - 350, cvs.height - 50, 5);
+    var star2 = new heavenlyObject(cvs.width - 650, cvs.height - 50, 5);
     star.drawObject(cvs.getContext("2d"));
-    sky.initializeSpaceShuttle(shuttle);
+    star1.drawObject(cvs.getContext("2d"));
+    star2.drawObject(cvs.getContext("2d"));
     sky.addStar(star);
+    sky.addStar(star1);
+    sky.addStar(star2);
+
+
+    var shuttle = new spaceShuttle(100, 50, 5, 95, 40);
+    sky.initializeSpaceShuttle(shuttle);
     shuttle.drawShuttle(cvs.getContext("2d"));
     setInterval(sky.moveShuttle, 50);
 }
