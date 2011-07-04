@@ -169,13 +169,13 @@ function test_game(){
     var cvs = document.getElementById("space_travel");
     var sky = new space(cvs);
 
-    for(var i = 0; i < 2 ; ++i){
+    for(var i = 1; i < 2 ; ++i){
         var star = new heavenlyObject(cvs.width - 250 - i * 300, cvs.height - 250, 5);
         star.drawObject(cvs.getContext("2d"));
         sky.addStar(star);
     }
 
-    var shuttle = new spaceShuttle(100, 50, 5, 98, 50);
+    var shuttle = new spaceShuttle(100, 50, 5, 99, 50);
     sky.initializeSpaceShuttle(shuttle);
     alert(shuttle);
     shuttle.drawShuttle(cvs.getContext("2d"));
