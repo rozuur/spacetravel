@@ -58,6 +58,7 @@ function space(canvas){
             spaceshuttle.drawShuttle(ctx);
         }else{
             alert("Game over");
+            self.endGame();
         }
     };
 
@@ -100,6 +101,14 @@ function space(canvas){
                 break;
             }
         }
+    };
+
+    this.startGame = function(){
+        self.timerId = setInterval(self.moveShuttle, interval);
+    };
+    
+    this.endGame = function(){
+        clearInterval(self.timerId);
     };
 }
 
@@ -258,8 +267,8 @@ function test_game(){
 
     var shuttle = new spaceShuttle(100, 50, 5, 99, 50);
     sky.initializeSpaceShuttle(shuttle);
-    alert(shuttle);
+    //alert(shuttle);
     shuttle.drawShuttle(cvs.getContext("2d"));
-    setInterval(sky.moveShuttle, interval);
+    sky.startGame();
 }
 
