@@ -10,14 +10,17 @@ function space(canvas){
 
     var reachedDest = false;
     var collided = false;
+    var lost = false;
 
     this.initializeSpaceShuttle = function(shuttle){
         spaceshuttle = shuttle;
         document.onkeydown = this.event;
+        shuttle.drawShuttle(ctx);
     };
 
     this.initializeDestination = function(dest){
-      destination = dest;  
+        destination = dest;  
+        dest.drawShuttle(ctx, 'blue');
     };
     
     this.spaceShuttle = function(){
@@ -26,6 +29,7 @@ function space(canvas){
 
     this.addStar = function(star){
         stars.push(star);
+        star.drawObject(ctx);
     };
     
     function moveObject(stars, object, dt)
@@ -58,7 +62,7 @@ function space(canvas){
     }
     
     this.moveShuttle = function(){
-        if(!self.shuttleCollided() && !self.reachedDestination()){
+        if(!self.shuttleCollided() && !self.reachedDestination() && !self.lostInOuterSpace()){
             spaceshuttle.clearShuttle(ctx);
             moveObject(stars, spaceshuttle, interval);
             //alert(spaceshuttle);
@@ -99,6 +103,15 @@ function space(canvas){
             }
         }
         return collided;
+    };
+
+    this.lostInOuterSpace = function(){
+        if(!lost){
+            var x = spaceshuttle.getX();
+            var y = spaceshuttle.getY();
+            lost =  x < 0 && x > cvs.width && y < 0 && y > cvs.height;
+        }
+        return lost;
     };
 
     this.event = function(e){
@@ -294,12 +307,6 @@ function test_game(){
     sky.addStar(star);
     sky.initializeSpaceShuttle(shuttle);
     sky.initializeDestination(dest);
-
-    //alert(shuttle);
-    var ctx = cvs.getContext('2d');
-    star.drawObject(ctx);
-    shuttle.drawShuttle(ctx);
-    dest.drawShuttle(ctx, 'blue');
 
     sky.startGame();
 }
