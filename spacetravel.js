@@ -9,6 +9,7 @@ function space(canvas){
 
     this.initializeSpaceShuttle = function(shuttle){
         spaceshuttle = shuttle;
+        cvs.onkeydown = this.event;
     };
     
     this.spaceShuttle = function(){
@@ -52,6 +53,28 @@ function space(canvas){
         //alert(spaceshuttle);
         spaceshuttle.drawShuttle(ctx);
     };
+
+    this.event = function(e){
+        if(!e){
+            e = window.event;
+        }
+        if(e && spaceshuttle){
+            switch(e.keyCode){
+            case 37: // left
+                spaceshuttle.moveLeft();
+                break;
+            case 38: // up
+                spaceshuttle.moveUp();
+                break;
+            case 39: // right
+                spaceshuttle.moveRight();
+                break;
+            case 40: // down
+                spaceshuttle.moveDown();
+                break;
+            }
+        }
+    };
 }
 
 function spaceShuttle(x, y, mass, px, py){
@@ -60,16 +83,25 @@ function spaceShuttle(x, y, mass, px, py){
     var curry = y;
     var prevy = py != null? py : y;
 
-    var velocity = 0;
+    var accelx = 0;
+    var accely = 0;
     var shuttleMass = mass;
     var radius = 5;
 
-    this.getVelocity = function(){
-        return velocity;
+    this.getAccelerationX = function(){
+        return accelx;
     };
     
-    this.setVelocity = function(v){
-        velocity = v;
+    this.setAccelerationX = function(a){
+        accelx = a;
+    };
+
+    this.getAccelerationY = function(){
+        return accely;
+    };
+    
+    this.setAccelerationY = function(a){
+        accely = a;
     };
 
     this.prevX = function(){
@@ -120,6 +152,21 @@ function spaceShuttle(x, y, mass, px, py){
         return "x,y = "+this.getX()+","+this.getY()+"px,py = "+this.prevX()+","+this.prevY();
     };
 
+    this.moveUp = function(){
+        accely -= 0.1;
+    };
+
+    this.moveDown = function(){
+        accely += 0.1;
+    };
+
+    this.moveLeft = function(){
+        accelx -= 0.1;
+    };
+
+    this.moveRight = function(){
+        accelx += 0.1;
+    };
 }
 
 function heavenlyObject(x, y, mass){
@@ -181,3 +228,4 @@ function test_game(){
     shuttle.drawShuttle(cvs.getContext("2d"));
     setInterval(sky.moveShuttle, interval);
 }
+
