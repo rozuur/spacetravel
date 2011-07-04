@@ -1,6 +1,5 @@
-var interval = 50; // milliseconds
-
 function space(canvas){
+    var interval = 50; // milliseconds
     var self = this;
     var cvs = canvas;
     var ctx = cvs.getContext("2d");
@@ -60,7 +59,7 @@ function space(canvas){
     
     this.moveShuttle = function(){
         if(!self.shuttleCollided() && !self.reachedDestination()){
-            //spaceshuttle.clearShuttle(ctx);
+            spaceshuttle.clearShuttle(ctx);
             moveObject(stars, spaceshuttle, interval);
             //alert(spaceshuttle);
             spaceshuttle.drawShuttle(ctx);
@@ -232,6 +231,7 @@ function spaceShuttle(x, y, mass, px, py){
 
 function heavenlyObject(x, y, mass){
     var radius = 10;
+    var G = 0.1; // gravitational constant?
 
     this.getRadius = function(){
         return radius;
@@ -242,7 +242,7 @@ function heavenlyObject(x, y, mass){
         var dy = this.getY() - object.getY();
         var r2 = dx * dx + dy * dy;
         var rdiv = r2 * Math.sqrt(r2);
-        return this.mass() * dx/ rdiv;
+        return G * this.mass() * dx/ rdiv;
     };
 
     this.accelerateY = function(object){
@@ -250,7 +250,7 @@ function heavenlyObject(x, y, mass){
         var dy = this.getY() - object.getY();
         var r2 = dx * dx + dy * dy;
         var rdiv = r2 * Math.sqrt(r2);
-        return this.mass() * dy/ rdiv;
+        return G * this.mass() * dy/ rdiv;
     };
 
     this.getX = function(){
@@ -262,7 +262,7 @@ function heavenlyObject(x, y, mass){
     };
     
     this.mass = function(){
-        return mass * 0.1;
+        return mass;
     };    
 
     this.toString = function(){
@@ -280,20 +280,25 @@ function heavenlyObject(x, y, mass){
 function test_game(){
     var cvs = document.getElementById("space_travel");
     var sky = new space(cvs);
-
-    for(var i = 1; i < 2 ; ++i){
-        var star = new heavenlyObject(cvs.width - 250 - i * 300, cvs.height - 250, 5);
-        star.drawObject(cvs.getContext("2d"));
-        sky.addStar(star);
-    }
-
+    
+    // for(var i = 1; i < 2 ; ++i){
+    //     var star = new heavenlyObject(cvs.width - 50 - i * 300, cvs.height - 250, 5);
+    //     star.drawObject(cvs.getContext("2d"));
+    //     sky.addStar(star);
+    // }
+    
+    var star = new heavenlyObject(cvs.width / 2, cvs.height / 2 , 5);
     var shuttle = new spaceShuttle(100, 50, 5, 99, 50);
     var dest = new spaceShuttle(100,250,50);
+
+    sky.addStar(star);
     sky.initializeSpaceShuttle(shuttle);
     sky.initializeDestination(dest);
+
     //alert(shuttle);
     shuttle.drawShuttle(cvs.getContext("2d"));
     dest.drawShuttle(cvs.getContext("2d"), 'blue');
+
     sky.startGame();
 }
 
