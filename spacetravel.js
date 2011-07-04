@@ -109,7 +109,7 @@ function space(canvas){
         if(!lost){
             var x = spaceshuttle.getX();
             var y = spaceshuttle.getY();
-            lost =  x < 0 && x > cvs.width && y < 0 && y > cvs.height;
+            lost =  x < 0 || x > cvs.width || y < 0 || y > cvs.height;
         }
         return lost;
     };
@@ -301,7 +301,7 @@ function test_game(){
     // }
     
     var star = new heavenlyObject(cvs.width / 2, cvs.height / 2 , 5);
-    var shuttle = new spaceShuttle(100, 50, 5, 99, 50);
+    var shuttle = new spaceShuttle(100, 50, 5);
     var dest = new spaceShuttle(100,250,50);
 
     sky.addStar(star);
