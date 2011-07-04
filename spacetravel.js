@@ -7,10 +7,18 @@ function space(canvas){
 
     var spaceshuttle = null;
     var stars = [];
+    var destination = null;
+
+    var reachedDest = false;
+    var collided = false;
 
     this.initializeSpaceShuttle = function(shuttle){
         spaceshuttle = shuttle;
         document.onkeydown = this.event;
+    };
+
+    this.initializeDestination = function(dest){
+      destination = dest;  
     };
     
     this.spaceShuttle = function(){
@@ -51,15 +59,26 @@ function space(canvas){
     }
     
     this.moveShuttle = function(){
-        if(!self.shuttleCollided()){
+        if(!self.shuttleCollided() && !self.reachedDestination()){
             //spaceshuttle.clearShuttle(ctx);
             moveObject(stars, spaceshuttle, interval);
             //alert(spaceshuttle);
             spaceshuttle.drawShuttle(ctx);
         }else{
-            alert("Game over");
+            if(self.reachedDestination()){            
+                alert("Successfully completed the mission.");
+            }else{
+                alert("Sorry, you have lost your ship");
+            }
             self.endGame();
         }
+    };
+
+    this.reachedDestination = function(){
+        if(!reachedDest){
+            reachedDest = objectCollided(destination, spaceshuttle);
+        }
+        return reachedDest;
     };
 
     function objectCollided(star, object){
@@ -71,11 +90,13 @@ function space(canvas){
     }
 
     this.shuttleCollided = function(){
-        var collided = false;
-        for(var i = 0, l = stars.length; i < l; ++i){
-            if(objectCollided(stars[i], spaceshuttle)){
-                collided = true;
-                break;
+        if(!collided){
+
+            for(var i = 0, l = stars.length; i < l; ++i){
+                if(objectCollided(stars[i], spaceshuttle)){
+                    collided = true;
+                    break;
+                }
             }
         }
         return collided;
@@ -173,9 +194,10 @@ function spaceShuttle(x, y, mass, px, py){
         return shuttleMass;
     };
 
-    this.drawShuttle = function(context){
+    this.drawShuttle = function(context, color){
+        if(!color) color = 'red';
         context.beginPath();
-        context.fillStyle = 'red';
+        context.fillStyle = color;
         context.arc(this.getX(), this.getY(), radius, 0, Math.PI * 2, true);
         context.fill();
     };
@@ -266,9 +288,12 @@ function test_game(){
     }
 
     var shuttle = new spaceShuttle(100, 50, 5, 99, 50);
+    var dest = new spaceShuttle(100,250,50);
     sky.initializeSpaceShuttle(shuttle);
+    sky.initializeDestination(dest);
     //alert(shuttle);
     shuttle.drawShuttle(cvs.getContext("2d"));
+    dest.drawShuttle(cvs.getContext("2d"), 'blue');
     sky.startGame();
 }
 
