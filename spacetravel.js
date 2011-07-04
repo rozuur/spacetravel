@@ -296,8 +296,10 @@ function test_game(){
     sky.initializeDestination(dest);
 
     //alert(shuttle);
-    shuttle.drawShuttle(cvs.getContext("2d"));
-    dest.drawShuttle(cvs.getContext("2d"), 'blue');
+    var ctx = cvs.getContext('2d');
+    star.drawObject(ctx);
+    shuttle.drawShuttle(ctx);
+    dest.drawShuttle(ctx, 'blue');
 
     sky.startGame();
 }
