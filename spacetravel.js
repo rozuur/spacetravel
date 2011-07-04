@@ -1,6 +1,7 @@
 var interval = 50; // milliseconds
 
 function space(canvas){
+    var self = this;
     var cvs = canvas;
     var ctx = cvs.getContext("2d");
 
@@ -9,7 +10,7 @@ function space(canvas){
 
     this.initializeSpaceShuttle = function(shuttle){
         spaceshuttle = shuttle;
-        cvs.onkeydown = this.event;
+        document.onkeydown = this.event;
     };
     
     this.spaceShuttle = function(){
@@ -26,8 +27,8 @@ function space(canvas){
         // x(t-dt) = x(t) - v * dt + a * dt * dt / 2
         // x(t+dt) = 2 * x(t) - x(t-dt) + a * dt * dt
 
-        var ax = 0;
-        var ay = 0;
+        var ax = object.getAccelerationX();
+        var ay = object.getAccelerationY();
         for(var i = 0, sl = stars.length; i < sl; ++i){
             ax += stars[i].accelerateX(object);
             ay += stars[i].accelerateY(object);
@@ -43,15 +44,40 @@ function space(canvas){
         var prevy = object.prevY();
         var y = 2 * curry - prevy + ay * dt * dt;
 
+        object.setAccelerationX(0);
+        object.setAccelerationY(0);
         object.setX(x);
         object.setY(y);
     }
     
     this.moveShuttle = function(){
-        //spaceshuttle.clearShuttle(ctx);
-        moveObject(stars, spaceshuttle, interval);
-        //alert(spaceshuttle);
-        spaceshuttle.drawShuttle(ctx);
+        if(!self.shuttleCollided()){
+            //spaceshuttle.clearShuttle(ctx);
+            moveObject(stars, spaceshuttle, interval);
+            //alert(spaceshuttle);
+            spaceshuttle.drawShuttle(ctx);
+        }else{
+            alert("Game over");
+        }
+    };
+
+    function objectCollided(star, object){
+        var dx = star.getX() - object.getX();
+        var dy = star.getY() - object.getY();
+        var rp = star.getRadius() + object.getRadius();
+
+        return dx * dx + dy * dy < rp * rp;
+    }
+
+    this.shuttleCollided = function(){
+        var collided = false;
+        for(var i = 0, l = stars.length; i < l; ++i){
+            if(objectCollided(stars[i], spaceshuttle)){
+                collided = true;
+                break;
+            }
+        }
+        return collided;
     };
 
     this.event = function(e){
@@ -87,6 +113,10 @@ function spaceShuttle(x, y, mass, px, py){
     var accely = 0;
     var shuttleMass = mass;
     var radius = 5;
+
+    this.getRadius = function(){
+        return radius;
+    };
 
     this.getAccelerationX = function(){
         return accelx;
@@ -153,24 +183,28 @@ function spaceShuttle(x, y, mass, px, py){
     };
 
     this.moveUp = function(){
-        accely -= 0.1;
+        accely -= 0.00005;
     };
 
     this.moveDown = function(){
-        accely += 0.1;
+        accely += 0.00005;
     };
 
     this.moveLeft = function(){
-        accelx -= 0.1;
+        accelx -= 0.00005;
     };
 
     this.moveRight = function(){
-        accelx += 0.1;
+        accelx += 0.00005;
     };
 }
 
 function heavenlyObject(x, y, mass){
     var radius = 10;
+
+    this.getRadius = function(){
+        return radius;
+    };
 
     this.accelerateX = function(object){
         var dx = this.getX() - object.getX();
