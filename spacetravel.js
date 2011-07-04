@@ -1,3 +1,5 @@
+var interval = 50; // milliseconds
+
 function space(canvas){
     var cvs = canvas;
     var ctx = cvs.getContext("2d");
@@ -30,7 +32,7 @@ function space(canvas){
             ay += stars[i].accelerateY(object);
         }
         
-        alert("acceleration = " + ax + ","+ ay);
+        //alert("acceleration = " + ax + ","+ ay);
 
         var currx = object.getX();
         var prevx = object.prevX();
@@ -46,16 +48,17 @@ function space(canvas){
     
     this.moveShuttle = function(){
         //spaceshuttle.clearShuttle(ctx);
-        moveObject(stars, spaceshuttle, 10);
+        moveObject(stars, spaceshuttle, interval);
+        //alert(spaceshuttle);
         spaceshuttle.drawShuttle(ctx);
     };
 }
 
 function spaceShuttle(x, y, mass, px, py){
     var currx = x;
-    var prevx = px ? px : x;
+    var prevx = px != null? px : x;
     var curry = y;
-    var prevy = py ? py : y;
+    var prevy = py != null? py : y;
 
     var velocity = 0;
     var shuttleMass = mass;
@@ -70,11 +73,11 @@ function spaceShuttle(x, y, mass, px, py){
     };
 
     this.prevX = function(){
-        return currx;
+        return prevx;
     };
 
     this.prevY = function(){
-        return curry;
+        return prevy;
     };
     
     this.getX = function(){
@@ -113,6 +116,10 @@ function spaceShuttle(x, y, mass, px, py){
         context.fill();
     };
 
+    this.toString = function(){
+        return "x,y = "+this.getX()+","+this.getY()+"px,py = "+this.prevX()+","+this.prevY();
+    };
+
 }
 
 function heavenlyObject(x, y, mass){
@@ -143,7 +150,7 @@ function heavenlyObject(x, y, mass){
     };
     
     this.mass = function(){
-        return mass * 50;
+        return mass * 0.1;
     };    
 
     this.toString = function(){
@@ -162,14 +169,15 @@ function test_game(){
     var cvs = document.getElementById("space_travel");
     var sky = new space(cvs);
 
-    for(var i = 0; i < 3 ; ++i){
+    for(var i = 0; i < 2 ; ++i){
         var star = new heavenlyObject(cvs.width - 250 - i * 300, cvs.height - 250, 5);
         star.drawObject(cvs.getContext("2d"));
         sky.addStar(star);
     }
 
-    var shuttle = new spaceShuttle(100, 50, 5, 95, 40);
+    var shuttle = new spaceShuttle(100, 50, 5, 98, 50);
     sky.initializeSpaceShuttle(shuttle);
+    alert(shuttle);
     shuttle.drawShuttle(cvs.getContext("2d"));
-    setInterval(sky.moveShuttle, 10);
+    setInterval(sky.moveShuttle, interval);
 }
